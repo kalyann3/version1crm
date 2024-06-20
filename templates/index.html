@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+            border-bottom: 3px solid #388E3C;
+        }
+        h2, h3 {
+            color: #4CAF50;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        .entity-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        input[type="text"], input[type="email"], input[type="number"], input[type="datetime-local"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #388E3C;
+        }
+        .entity-list {
+            margin: 10px 0;
+        }
+        .entity-item {
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .entity-item button {
+            margin-left: 10px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Relationship Management (CRM)</h1>
+    <div class="container" id="app">
+        <!-- Customer Section -->
+        <div class="entity-section">
+            <h2>Customers</h2>
+            <button onclick="loadCustomers()">Load Customers</button>
+            <div class="entity-list" id="customers"></div>
+            
+            <h3>Add New Customer</h3>
+            <form id="customerForm">
+                <input type="text" id="name" placeholder="Name" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="text" id="phone" placeholder="Phone">
+                <input type="text" id="address" placeholder="Address">
+                <button type="submit">Add Customer</button>
+            </form>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="entity-section">
+            <h2>Contacts</h2>
+            <button onclick="loadContacts()">Load Contacts</button>
+            <div class="entity-list" id="contacts"></div>
+            
+            <h3>Add New Contact</h3>
+            <form id="contactForm">
+                <input type="text" id="contactName" placeholder="Name" required>
+                <input type="email" id="contactEmail" placeholder="Email" required>
+                <input type="text" id="contactPhone" placeholder="Phone">
+                <input type="number" id="contactCustomerId" placeholder="Customer ID" required>
+                <button type="submit">Add Contact</button>
+            </form>
+        </div>
+
+        <!-- Opportunity Section -->
+        <div class="entity-section">
+            <h2>Opportunities</h2>
+            <button onclick="loadOpportunities()">Load Opportunities</button>
+            <div class="entity-list" id="opportunities"></div>
+            
+            <h3>Add New Opportunity</h3>
+            <form id="opportunityForm">
+                <input type="text" id="opportunityDescription" placeholder="Description" required>
+                <input type="text" id="opportunityStage" placeholder="Stage" required>
+                <input type="number" id="opportunityCustomerId" placeholder="Customer ID" required>
+                <button type="submit">Add Opportunity</button>
+            </form>
+        </div>
+
+        <!-- Interaction Section -->
+        <div class="entity-section">
+            <h2>Interactions</h2>
+            <button onclick="loadInteractions()">Load Interactions</button>
+            <div class="entity-list" id="interactions"></div>
+            
+            <h3>Add New Interaction</h3>
+            <form id="interactionForm">
+                <input type="text" id="interactionType" placeholder="Type" required>
+                <input type="datetime-local" id="interactionDate" placeholder="Date" required>
+                <input type="text" id="interactionNotes" placeholder="Notes">
+                <input type="number" id="interactionCustomerId" placeholder="Customer ID" required>
+                <button type="submit">Add Interaction</button>
+            </form>
+        </div>
+        
+        <!-- Dashboard Button -->
+        <div class="entity-section">
+            <h2>Dashboard</h2>
+            <button onclick="goToDashboard()">Go to Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        function loadCustomers() {
+            fetch('/customers')
+                .then(response => response.json())
+                .then(data => {
+                    const customersDiv = document.getElementById('customers');
+                    customersDiv.innerHTML = '';
+                    data.forEach(customer => {
+                        const customerDiv = document.createElement('div');
+                        customerDiv.classList.add('entity-item');
+                        customerDiv.innerHTML = `
+                            ID: ${customer.id}, Name: ${customer.name}, Email: ${customer.email}, Phone: ${customer.phone}, Address: ${customer.address}
+                            <div>
+                                <button onclick="editCustomer(${customer.id})">Edit</button>
+                                <button onclick="deleteCustomer(${customer.id})">Delete</button>
+                            </div>
+                        `;
+                        customersDiv.appendChild(customerDiv);
+                    });
+                });
+        }
+
+        function loadContacts() {
+            fetch('/contacts')
+                .then(response => response.json())
+                .then(data => {
+                    const contactsDiv = document.getElementById('contacts');
+                    contactsDiv.innerHTML = '';
+                    data.forEach(contact => {
+                        const contactDiv = document.createElement('div');
+                        contactDiv.classList.add('entity-item');
+                        contactDiv.innerHTML = `
+                            ID: ${contact.id}, Name: ${contact.name}, Email: ${contact.email}, Phone: ${contact.phone}, Customer ID: ${contact.customer_id}
+                            <div>
+                                <button onclick="editContact(${contact.id})">Edit</button>
+                                <button onclick="deleteContact(${contact.id})">Delete</button>
+                            </div>
+                        `;
+                        contactsDiv.appendChild(contactDiv);
+                    });
+                });
+        }
+
+        function loadOpportunities() {
+            fetch('/opportunities')
+                .then(response => response.json())
+                .then(data => {
+                    const opportunitiesDiv = document.getElementById('opportunities');
+                    opportunitiesDiv.innerHTML = '';
+                    data.forEach(opportunity => {
+                        const opportunityDiv = document.createElement('div');
+                        opportunityDiv.classList.add('entity-item');
+                        opportunityDiv.innerHTML = `
+                            ID: ${opportunity.id}, Description: ${opportunity.description}, Stage: ${opportunity.stage}, Customer ID: ${opportunity.customer_id}
+                            <div>
+                                <button onclick="editOpportunity(${opportunity.id})">Edit</button>
+                                <button onclick="deleteOpportunity(${opportunity.id})">Delete</button>
+                            </div>
+                        `;
+                        opportunitiesDiv.appendChild(opportunityDiv);
+                    });
+                });
+        }
+
+        function loadInteractions() {
+            fetch('/interactions')
+                .then(response => response.json())
+                .then(data => {
+                    const interactionsDiv = document.getElementById('interactions');
+                    interactionsDiv.innerHTML = '';
+                    data.forEach(interaction => {
+                        const interactionDiv = document.createElement('div');
+                        interactionDiv.classList.add('entity-item');
+                        interactionDiv.innerHTML = `
+                            ID: ${interaction.id}, Type: ${interaction.type}, Date: ${interaction.date}, Notes: ${interaction.notes}, Customer ID: ${interaction.customer_id}
+                            <div>
+                                <button onclick="editInteraction(${interaction.id})">Edit</button>
+                                <button onclick="deleteInteraction(${interaction.id})">Delete</button>
+                            </div>
+                        `;
+                        interactionsDiv.appendChild(interactionDiv);
+                    });
+                });
+        }
+
+        function editCustomer(id) {
+            const name = prompt("Enter new name:");
+            const email = prompt("Enter new email:");
+            const phone = prompt("Enter new phone:");
+            const address = prompt("Enter new address:");
+            fetch(`/customers/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, phone, address })
+            })
+            .then(response => response.json())
+            .then(data => loadCustomers());
+        }
+
+        function deleteCustomer(id) {
+            fetch(`/customers/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => loadCustomers());
+        }
+
+        function editContact(id) {
+            const name = prompt("Enter new name:");
+            const email = prompt("Enter new email:");
+            const phone = prompt("Enter new phone:");
+            const customer_id = prompt("Enter new customer ID:");
+            fetch(`/contacts/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, phone, customer_id })
+            })
+            .then(response => response.json())
+            .then(data => loadContacts());
+        }
+
+        function deleteContact(id) {
+            fetch(`/contacts/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => loadContacts());
+        }
+
+        function editOpportunity(id) {
+            const description = prompt("Enter new description:");
+            const stage = prompt("Enter new stage:");
+            const customer_id = prompt("Enter new customer ID:");
+            fetch(`/opportunities/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ description, stage, customer_id })
+            })
+            .then(response => response.json())
+            .then(data => loadOpportunities());
+        }
+
+        function deleteOpportunity(id) {
+            fetch(`/opportunities/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => loadOpportunities());
+        }
+
+        function editInteraction(id) {
+            const type = prompt("Enter new type:");
+            const date = prompt("Enter new date:");
+            const notes = prompt("Enter new notes:");
+            const customer_id = prompt("Enter new customer ID:");
+            fetch(`/interactions/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ type, date, notes, customer_id })
+            })
+            .then(response => response.json())
+            .then(data => loadInteractions());
+        }
+
+        function deleteInteraction(id) {
+            fetch(`/interactions/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => loadInteractions());
+        }
+
+        document.getElementById('customerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            fetch('/customers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, phone, address })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadCustomers();
+                document.getElementById('customerForm').reset();
+            });
+        });
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const phone = document.getElementById('contactPhone').value;
+            const customer_id = document.getElementById('contactCustomerId').value;
+            fetch('/contacts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, phone, customer_id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadContacts();
+                document.getElementById('contactForm').reset();
+            });
+        });
+
+        document.getElementById('opportunityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const description = document.getElementById('opportunityDescription').value;
+            const stage = document.getElementById('opportunityStage').value;
+            const customer_id = document.getElementById('opportunityCustomerId').value;
+            fetch('/opportunities', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ description, stage, customer_id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadOpportunities();
+                document.getElementById('opportunityForm').reset();
+            });
+        });
+
+        document.getElementById('interactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const type = document.getElementById('interactionType').value;
+            const date = document.getElementById('interactionDate').value;
+            const notes = document.getElementById('interactionNotes').value;
+            const customer_id = document.getElementById('interactionCustomerId').value;
+            fetch('/interactions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ type, date, notes, customer_id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadInteractions();
+                document.getElementById('interactionForm').reset();
+            });
+        });
+
+        function goToDashboard() {
+            window.location.href = 'dashboard';
+        }
+    </script>
+</body>
+</html>

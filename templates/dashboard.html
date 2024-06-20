@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Dashboard</title>
+    <style>
+        /* Reset styles and basic typography */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        /* Main container */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 36px;
+        }
+        /* Dashboard section styles */
+        .dashboard-section {
+            margin-bottom: 30px;
+        }
+        .dashboard-section h2 {
+            font-size: 24px;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        /* Metric styles */
+        .metric {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        /* Opportunities list styles */
+        .opportunities-list {
+            list-style: none;
+            padding: 0;
+        }
+        .opportunity-item {
+            margin-bottom: 6px;
+            font-size: 16px;
+        }
+        /* Recent interactions styles */
+        .interactions-list {
+            list-style: none;
+            padding: 0;
+        }
+        .interaction-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #6105f4;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .interaction-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 0 10px rgba(4, 233, 61, 0.975);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CRM Dashboard</h1>
+        </header>
+
+        <section class="dashboard-section">
+            <h2>Key Metrics</h2>
+            <div class="metric">Number of Opportunities: {{ num_opportunities }}</div>
+            <div class="metric">
+                <h3>Opportunities by Stage</h3>
+                <ul class="opportunities-list">
+                    {% for stage, count in stages %}
+                        <li class="opportunity-item">{{ stage }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <h2>Recent Interactions</h2>
+            <ul class="interactions-list">
+                {% for interaction in interaction_history %}
+                    <li class="interaction-item">
+                        <strong>{{ interaction.date }}</strong> - {{ interaction.type }}<br>
+                        {{ interaction.notes }}<br>
+                        (Customer ID: {{ interaction.customer_id }})
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+</body>
+</html>

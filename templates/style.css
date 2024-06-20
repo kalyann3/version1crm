@@ -1,0 +1,42 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input, button {
+    padding: 8px;
+    margin: 5px;
+}
+
+button {
+    cursor: pointer;
+}
+
+.entity-section {
+    margin-bottom: 40px;
+}
+
+.entity-list {
+    margin: 10px 0;
+}
+
+.entity-item {
+    margin-bottom: 5px;
+}
+
+.dashboard-section {
+    margin-bottom: 40px;
+}
+
+.metric {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
